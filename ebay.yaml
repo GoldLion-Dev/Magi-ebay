@@ -13,22 +13,33 @@ api.sandbox.ebay.com:
 # Trading API - https://www.x.com/developers/ebay/products/trading-api
 api.ebay.com:
     compatability: 719
-    appid:ronaldha-getItems-PRD-87284ce84-5ae3d9bf
-   certid:PRD-7284ce84eebb-5140-4802-8969-1f50
-   devid:da34ba40-4ce8-472d-a43a-ab641d551ef7
-   token:v^1.1#i^1#f^0#r^1#p^3#I^3#t^Ul4xMF8yOjY5MEM4MUNBOTc4NDlGNDQ0RTZGMDk2MjNCMEU3NjVBXzNfMSNFXjI2MA==
+#     appid:ronaldha-getItems-PRD-87284ce84-5ae3d9bf
+#    certid:PRD-7284ce84eebb-5140-4802-8969-1f50
+#    devid:da34ba40-4ce8-472d-a43a-ab641d551ef7
+#    token:v^1.1#i^1#f^0#r^1#p^3#I^3#t^Ul4xMF8yOjY5MEM4MUNBOTc4NDlGNDQ0RTZGMDk2MjNCMEU3NjVBXzNfMSNFXjI2MA==
+      appid:harrypot-magi-PRD-d8b49c13a-179f1f7d
+      certid:PRD-8b49c13aa9a5-b06c-44df-b113-648c
+      devid:89d0f666-6083-4c25-932f-a8b5d4148af8
+      token:v^1.1#i^1#p^3#r^1#f^0#I^3#t^Ul4xMF82OjdGMjVDMDA3NDNDNzY0M0YwNUU1M0UyOTZCMDRGQjNCXzNfMSNFXjI2MA==
 
 # Finding API - https://www.x.com/developers/ebay/products/finding-api
 svcs.ebay.com:
-    appid:ronaldha-getItems-PRD-87284ce84-5ae3d9bf
+    # appid:ronaldha-getItems-PRD-87284ce84-5ae3d9bf
+     appid:harrypot-magi-PRD-d8b49c13a-179f1f7d
 
 # Shopping API - https://www.x.com/developers/ebay/products/shopping-api
 open.api.ebay.com:
-    appid:ronaldha-getItems-PRD-87284ce84-5ae3d9bf
+    # appid:ronaldha-getItems-PRD-87284ce84-5ae3d9bf
+     appid:harrypot-magi-PRD-d8b49c13a-179f1f7d
 
 svcs.ebay.com:
     compatability: 719
-    appid:ronaldha-getItems-PRD-87284ce84-5ae3d9bf
-   certid:PRD-7284ce84eebb-5140-4802-8969-1f50
-   devid:da34ba40-4ce8-472d-a43a-ab641d551ef7
-   token:v^1.1#i^1#f^0#r^1#p^3#I^3#t^Ul4xMF8yOjY5MEM4MUNBOTc4NDlGNDQ0RTZGMDk2MjNCMEU3NjVBXzNfMSNFXjI2MA==
+      appid:harrypot-magi-PRD-d8b49c13a-179f1f7d
+      certid:PRD-8b49c13aa9a5-b06c-44df-b113-648c
+      devid:89d0f666-6083-4c25-932f-a8b5d4148af8
+      token:v^1.1#i^1#p^3#r^1#f^0#I^3#t^Ul4xMF82OjdGMjVDMDA3NDNDNzY0M0YwNUU1M0UyOTZCMDRGQjNCXzNfMSNFXjI2MA==   
+
+#       appid:ronaldha-getItems-PRD-87284ce84-5ae3d9bf
+#    certid:PRD-7284ce84eebb-5140-4802-8969-1f50
+#    devid:da34ba40-4ce8-472d-a43a-ab641d551ef7
+#    token:v^1.1#i^1#f^0#r^1#p^3#I^3#t^Ul4xMF8yOjY5MEM4MUNBOTc4NDlGNDQ0RTZGMDk2MjNCMEU3NjVBXzNfMSNFXjI2MA==
