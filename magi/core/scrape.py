@@ -1,12 +1,10 @@
 from bs4 import BeautifulSoup
 from urllib.parse import quote
 from langdetect import detect
-from tkinter import messagebox
 import requests
 import re
 import json
 import sqlite3
-# import MeCab
 from datetime import datetime
 import pytz
 import sudachipy
@@ -15,7 +13,7 @@ from ebaysdk import response
 from ebaysdk.trading import Connection as Trading
 from ebaysdk.exception import ConnectionError
 from ebaysdk.policies import Connection as Policies
-
+import time
 
 listing_status = ''
 class Scrape:
@@ -48,35 +46,38 @@ class Scrape:
 
     def extract(self):
         url = self.url
+        if 'products' in url:
+            url = url.replace('products','items')
         global listing_status
         listing_status = 'start'
 
         while True:
            
             response = requests.get(url)
-            soup = BeautifulSoup(response.content,'html.parser')
-            if soup.select_one('.next a') == None:
-                break
-            next_url = soup.select_one('.next a')
-            next_url = next_url['href']
+            original_soap = BeautifulSoup(response.content,'html.parser')
+            
 
-            item_links = [a['href'] for a in soup.select('.item-list__box a')]
+            item_links = [a['href'] for a in original_soap.select('.item-list__box a')]
+
             for item_link in item_links:
                 
-
                 image_list = []
                 item_link = 'https://magi.camp' + item_link 
+                print(item_link)
                 result = self.checkItemCode(item_link)
                 if result == True:
                     try:
                         response = requests.get(item_link)
                         soup = BeautifulSoup(response.content,'html.parser')
                         title = soup.select_one('.item-detail h2').text
+                        print(title)
                         replaced_title = self.replaceCharacterName(title)
+                        print(replaced_title)
                         translated_title = self.translate(replaced_title)
+                        print(translated_title)
                     
                     except:
-                        pass
+                        continue
                   
                     image_links = soup.select('.js-slider-thumb')
                     for image_link in image_links:
@@ -100,9 +101,10 @@ class Scrape:
                     format = '%Y-%m-%d %H:%M:%S'
 
                         
-                        # applying strftime() to format the datetime
+                    # applying strftime() to format the datetime
                     datetime_string = date_time.strftime(format)
-                   
+                    # Pause the program for 5 seconds
+                    time.sleep(1)
                     self.listProduct(translated_title,self.description,total_price, image_list, self.character,item_link)
                     self.character = ''
                   
@@ -110,13 +112,18 @@ class Scrape:
                         print('The thread was stopped in if.')
                         break
                   
-          
+            if original_soap.select_one('.next a') == None:
+                    break
+            next_url = original_soap.select_one('.next a')
+            next_url = next_url['href']
+
             url = 'https://magi.camp' + next_url
             if listing_status == 'stop':
                 print('The thread was stopped in if.')
                 break
         listing_status = 'stop'
-        return 
+
+        
        
 
 
@@ -138,7 +145,7 @@ class Scrape:
         records = Character.objects.all()
         serializer = CharacterSerializer(records, many=True)
         title_collection = self.extract_japanese_words(title)
-
+        print(title_collection)
         for record in serializer.data:
             japanese_name = record['japanese_name']
 
@@ -187,8 +194,8 @@ class Scrape:
         shipping_cost = self.checkShippingCost(price,setting)
         print(shipping_cost)
         original_price = price
-        price = float(price) + float(shipping_cost)
-        price = price * float(self.currency_rate) * float(self.profit_rate) / 10000 
+        price = float(original_price) + float(shipping_cost)
+        price = price * float(self.currency_rate) / (1 - 0.186 - float(self.profit_rate) / 100) 
         qty = '1'
         categoryId = '183454'
 
@@ -330,7 +337,7 @@ class Scrape:
                     conditionDescriptorValue1 = '275020' 
                 if self.psa9 == True:
                     conditionDescriptorValue1 = '275022'
-                if self.psa10 == '' & self.psa9 == '':
+                if self.psa10 == '' and self.psa9 == '':
                     conditionDescriptorValue1 = '275020' 
 
                 conditionDescriptor = [
@@ -368,7 +375,7 @@ class Scrape:
                 serializer = ProductSerializer(product,data={'log_id':log_id,'title':title,'price':original_price,'image_url':image,'listing_date':datetime_string,'item_code':self.itemId},partial=True)
                 if serializer.is_valid():
                     serializer.save()
-                return True        
+                return    
               
             print(response.reply)
 
@@ -377,7 +384,7 @@ class Scrape:
             print(e.response.dict())
             pass     
 
-        # return    
+        return    
 
 
 

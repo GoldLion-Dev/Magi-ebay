@@ -57,6 +57,8 @@ def getSellerProfile(request):
     
 @api_view(['GET','POST'])
 def listProduct(request):
+    
+
     request_data = request.data
     bussiness_policy = request_data['businessPolicy']
     input_values = request_data['inputValues']
@@ -70,7 +72,8 @@ def listProduct(request):
     if serializer.is_valid():
         serializer.save()
     else:
-        print(serializer.errors)    
+        print(serializer.errors)  
+       
   
     first_record = Setting.objects.first()
        
@@ -78,12 +81,16 @@ def listProduct(request):
         serializer = SettingSerializer(data=input_values)
         if serializer.is_valid():
                 serializer.save()
+        
     else:
         serializer = SettingSerializer(first_record,input_values,partial=True)
         if serializer.is_valid():
             serializer.save()
+           
         else:
-            print(serializer.errors)       
+            print(serializer.errors) 
+           
+            return Response({"status": "500","errors":serializer.errors}, status=status.HTTP_200_OK)    
     scrape = Scrape(input_values,bussiness_policy)
     global instance
     instance = scrape
@@ -102,14 +109,23 @@ def getSettingInformation(request):
 @api_view(['GET','POST'])   
 def stopListing(request):
     global instance
-    instance.stop()
-    return Response({"status": "200"}, status=status.HTTP_200_OK) 
+    if instance != '':
+       instance.stop()
+       return Response({"status": "200"}, status=status.HTTP_200_OK) 
+    if instance == '':
+       instance.stop()
+       return Response({"status": "200"}, status=status.HTTP_200_OK) 
 
 @api_view(['GET','POST'])   
 def getListingStatus(request):
     global instance
-    result = instance.getListingStatus()
-    return Response({"status": "200","result":result}, status=status.HTTP_200_OK) 
+   
+    if instance != '':
+        result = instance.getListingStatus()
+        return Response({"status": "200","result":result}, status=status.HTTP_200_OK) 
+
+    if instance == '':
+        return Response({"status": "500","instance":instance}, status=status.HTTP_200_OK) 
 
 
 @api_view(['GET','POST'])
@@ -138,7 +154,7 @@ def checkProductStatus(request):
     serializer = ProductSerializer(products,many=True)
 
     for product in serializer.data:
-        if product['item_code'] != None:
+        if (product['item_code'] != None) and (product['listing_date'] != None):
             Check.checkPrice(product['item_url'],product['item_code'],product['price'],product['listing_date'],product['countdowned_date'],setting)
             print('hi')
 

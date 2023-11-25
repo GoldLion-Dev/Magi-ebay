@@ -43,9 +43,9 @@ def checkPrice(item_link,item_code,database_price,listing_date,countdowned_date,
                 # Specify the item ID of the listing you want to update
                 item_id = item_code
                 shipping_cost = calculateShippingCost(total_price,setting)
-                # Specify the new price for the listing
+
                 price = float(total_price) + float(shipping_cost)
-                new_price = price * float(setting['currency_rate']) * float(setting['profit_rate']) / 10000 
+                new_price = price * float(setting['currency_rate']) / (1 - 0.186 - float(setting['profit_rate']) / 100)
 
                 # Create the request to revise the item's price
                 request = {
@@ -113,7 +113,7 @@ def checkPrice(item_link,item_code,database_price,listing_date,countdowned_date,
     # Print the number of days between the two dates
     print(delta.days)
 
-    if float(delta.days) > float(setting['countdown_duration']) and float(delta.days) < float(setting['endlist_duration']) and countdowned_date == None:
+    if float(delta.days) >= float(setting['countdown_duration']) and float(delta.days) <= float(setting['endlist_duration']) and (float(delta.days) % float(setting['countdown_duration']) == 0):
         product = Product.objects.get(item_url=item_link)
         serializer = ProductSerializer(product,{"countdowned_date":datetime_string},partial=True)
         if serializer.is_valid():
@@ -121,7 +121,13 @@ def checkPrice(item_link,item_code,database_price,listing_date,countdowned_date,
         else:
             print(serializer.errors) 
 
-        changed_price = float(database_price) - float(setting['countdown_money'])
+        
+        if float(setting['countdown_money']) < float(setting['profit_rate']) and (float(delta.days) / float(setting['countdown_duration'])) * float(setting['countdown_money']) < float(setting['profit_rate']) - float(setting['discount_stopper']):
+            shipping_cost = calculateShippingCost(database_price,setting)
+            price = float(database_price) + float(shipping_cost) 
+            new_price = price * float(setting['currency_rate']) / (1 - 0.186 - float(setting['profit_rate'])/100 + (float(delta.days) / float(setting['countdown_duration'])) * (float(setting['countdown_money'])) / 100)
+        else:
+            return
 
         try:
             # Create a connection to the eBay Trading API
@@ -130,13 +136,6 @@ def checkPrice(item_link,item_code,database_price,listing_date,countdowned_date,
             # Specify the item ID of the listing you want to update
             item_id = item_code
 
-            # Specify the new price for the listing
-            new_price = changed_dollar_price
-            shipping_cost = calculateShippingCost(changed_price,setting)
-            # Specify the new price for the listing
-            price = float(changed_price) + float(shipping_cost)
-            new_price = price * float(setting['currency_rate']) * float(setting['profit_rate']) / 10000 
-            # Create the request to revise the item's price
             request = {
                 'Item': {
                     'ItemID': item_id,
@@ -165,15 +164,12 @@ def checkPrice(item_link,item_code,database_price,listing_date,countdowned_date,
             api = Trading(domain='api.ebay.com',config_file='ebay.yaml')
 
             # Create the request XML payload
-            request_data = {
-                'InventoryStatus': {
-                    'ItemID': item_id,
-                    'Quantity': new_quantity
-                }
+            end_item_request = {
+                'ItemID': item_id,
+                'EndingReason':'NotAvailable'
             }
 
-            # Call the ReviseInventoryStatus API
-            response = api.execute('ReviseInventoryStatus', request_data)
+            response = api.execute('EndItem', end_item_request)
 
             # Check the response status
             if response.reply.Ack == 'Success':

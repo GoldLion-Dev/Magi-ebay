@@ -7,6 +7,7 @@ class Setting(models.Model):
   countdown_duration = models.CharField(max_length=255)
   countdown_money = models.CharField(max_length=255)
   endlist_duration = models.CharField(max_length=255)
+  discount_stopper = models.CharField(max_length=255)
   description = models.TextField(max_length=10000)
   shipping_cost1 = models.CharField(max_length=255)
   shipping_cost2 = models.CharField(max_length=255)

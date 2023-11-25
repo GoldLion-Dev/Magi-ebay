@@ -19,8 +19,7 @@ click==8.1.7
 colorama==0.4.6
 cryptography==41.0.3
 cssselect==1.2.0
-cx-Freeze==6.15.10
-cx-Logging==3.1.0
+
 Django==4.2.4
 django-cors-headers==4.2.0
 djangorestframework==3.14.0
@@ -64,12 +63,12 @@ outcome==1.2.0
 packaging==23.1
 pandas==2.0.3
 parsel==1.8.1
-pdf2image==1.16.3
+
 pefile==2023.2.7
-Pillow==10.1.0
+
 proto-plus==1.22.3
 protobuf==4.24.3
-py2exe==0.13.0.1
+
 pyasn1==0.5.0
 pyasn1-modules==0.3.0
 pycares==4.4.0
@@ -104,7 +103,6 @@ TwoCaptcha==0.0.1
 typing_extensions==4.8.0
 tzdata==2023.3
 uncompyle6==3.9.0
-unidic-lite==1.0.8
 uritemplate==4.1.1
 urllib3==1.26.16
 w3lib==2.1.2

@@ -84,9 +84,9 @@ WSGI_APPLICATION = 'magi_ebay.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'magi-ebay',
-        'USER': 'root',
-        'PASSWORD': '',
+        'NAME': 'magi_ebay',
+        'USER': 'ronald',
+        'PASSWORD': '1234',
         'HOST': 'localhost',
         'PORT': '3306',
     }
